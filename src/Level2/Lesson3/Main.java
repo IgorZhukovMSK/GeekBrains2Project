@@ -1,7 +1,9 @@
 package Level2.Lesson3;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class Main {
   /*
@@ -16,55 +18,50 @@ public class Main {
   несколько записей. Итого должно получиться 3 класса Main, PhoneBook, Person.
     */
 
-    private static final String str = "Однажды весною, Однажды весною, в час небывало жаркого заката, жаркого заката";
-    /*
-    в Москве, на Патриарших прудах, " +
-            "появились два гражданина. Первый из них, одетый в летнюю серенькую пару, был маленького роста, упитан, " +
-            "Однажды весною, в час небывало жаркого заката, в Москве, на Патриарших прудах, появились два гражданина." +
-            "лыс, свою приличную шляпу пирожком нес в руке, а на хорошо выбритом лице его помещались сверхъестественных " +
-            "размеров очки в черной роговой оправе.";
-*/
+    private static final String str = "Однажды весною, Однажды весною, в час небывало жаркого заката, жаркого заката в час небывало жаркого заката";
+
 
     //private static void duplicateString(String str) {
 
     public static void main(String[] args) {
 
+        notDublicate(str);
 
+    }
+
+    private static Set<String> notDublicate(String str) {
         String stringTemp = str.toLowerCase().replaceAll("[\\p{P}\\p{S}]", "");
         String[] stringMatrix = stringTemp.split(" ");
 
-        //String[] stringNotDuplicate = null;
+        LinkedHashSet<String> stringSet = new LinkedHashSet<>();
 
-        List<String> listString = new ArrayList();
+        for (int j = 0; j < stringMatrix.length; j++) {
 
-        for (int i = 0; i < stringMatrix.length; i++) {
-
-            for (int j = 0; j < stringMatrix.length; j++) {
-
-                if (!stringMatrix[i].equals(stringMatrix[j])) {
-
-                    listString.add(stringMatrix[j]);
-
-                }
-            }
+            stringSet.add(stringMatrix[j]);
         }
+        System.out.println(stringSet);
 
-        //for (int i = 0; i < listString.size(); i++) {
-            System.out.println(listString);
+       wordCount(stringMatrix);
 
-      //  }
+        return stringSet;
     }
+
+    private static void wordCount(String[] stringMatrix) {
+        HashMap<String, Integer> hashMapWordCount = new HashMap<>();
+
+        for (int i = 0; i < stringMatrix.length; i ++){
+            int count = 0;
+            for (int j = 0; j < stringMatrix.length; j++) {
+                if (stringMatrix [i].equals(stringMatrix[j])){
+                    count++;
+                                            }
+
+                hashMapWordCount.put(stringMatrix[i], count);
+            }
+
+        }
+        System.out.println(hashMapWordCount);
+    }
+
 }
-
-//        for (String str : stringNotDuplicate) {
-//            System.out.println(str);
-//        }
-
-
-
-//    public static void main(String[] args) {
-//
-//        duplicateString();
-//
-//    }
 
