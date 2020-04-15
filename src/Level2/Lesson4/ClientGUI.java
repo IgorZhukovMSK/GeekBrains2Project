@@ -4,6 +4,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+/*
+1. Сообщение из "tfMessage" при нажатии кнопки "btnSend" (или Enter) должно выводиться в панель "log". // РЕШЕНО
+    Вопрос - видимо поле "tfMessage" должно как то очищаться - обновляться после вывода в "log" // РЕШЕНО
+    Вопрос - вывод нового сообщения должно быть с новой строки //РЕШЕНО
+    Вопрос - разобраться, почему второй раз нельзя отправлять сообщение // РЕШЕНО
+    Вопрос - почему "Enter" не всегда срабатывает в панеле "log"  // Потому, что в строке "log.setEnabled(false);" - было true //РЕШЕНО
+
+2. Одновременно с п.1. должно все сохраняться в файл
+
+    Вопрос - где должен быть расположен текстовый фал // РЕЩЕНО
+    Вопрос - когда заполняется - Думаю сразу при создании окна должен буть типа аарйлиста стринг - сообщения добавляются как п 1. // РЕШЕНО
+ */
 
 public class ClientGUI extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler {
 
@@ -26,6 +44,8 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
 
     private final JList<String> userList = new JList<>();
 
+
+
     ClientGUI() {
 
         Thread.setDefaultUncaughtExceptionHandler(this);
@@ -38,8 +58,10 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         JScrollPane scrlUser = new JScrollPane(userList);
         JScrollPane scrlPane = new JScrollPane(log);
         scrlUser.setPreferredSize(new Dimension(100, 0));
-        log.setWrapStyleWord(true);
+        log.setWrapStyleWord(false);
+        log.setLineWrap(true);
         log.setEnabled(false);
+
         cbAlwaysOnTop.addActionListener(this);
 
         panelTop.add(tfIPAdress);
@@ -58,7 +80,45 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         add(panelBottom, BorderLayout.SOUTH);
 
         setVisible(true);
-    }
+
+        List<String> logList = new ArrayList<>();
+
+        btnSend.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                log.append(tfMessage.getText() + "\n");
+                logList.add(tfMessage.getText());
+                log.grabFocus();
+                getRootPane().setDefaultButton(btnSend); // кнопка ентер по умолчанию "btnSend"
+
+            }
+        });
+        tfMessage.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                tfMessage.setText("");
+            }
+        });
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+
+                try(FileWriter writerFile = new FileWriter("G:/Qnap/Java учеба/Geekbrains/GeekBrains2Project/log.txt", true))
+                {
+
+                    writerFile.write(String.valueOf(logList) + "\n");
+                    writerFile.flush();
+                }
+                catch(IOException ex){
+
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+        });
+
+}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -89,7 +149,6 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         JOptionPane.showMessageDialog(this, msg, "Exceptin", JOptionPane.ERROR_MESSAGE);
         System.exit(1);
     }
-
 }
 
 
