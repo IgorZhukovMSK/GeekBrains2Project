@@ -19,17 +19,35 @@ public class Main {
     static final int h = size / 2;
 
 
-    public static void main (String [] args){
-
+    public static void main (String [] args) {
         float[] arr = new float[size];
+        long a = 0;
 
-        long a = System.currentTimeMillis();
 
-        for (float fl : arr) {
+        fillingInUnits(arr);
+        complexFilling(arr);
 
-            System.out.println(fl);
         }
 
+    private static void complexFilling(float[] arr) {
+        long a;
+        a = System.currentTimeMillis();
+        for (int i = 0; i < size; i ++){
+            arr[i] = (float)(arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+        }
+
+        System.out.println(System.currentTimeMillis()-a);
     }
 
+    private static void fillingInUnits(float[] arr) {
+        long a;
+        a = System.currentTimeMillis();
+        for (int i = 0; i < size; i++) {
+
+            arr[i] = 1;
+        }
+        System.out.println(System.currentTimeMillis()-a);
+    }
 }
+
+
