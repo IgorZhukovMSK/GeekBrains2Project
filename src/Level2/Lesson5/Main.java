@@ -37,8 +37,8 @@ public class Main {
         long c = 0;
         MyThread t0 = new MyThread(1);
         MyThread t1 = new MyThread(2);
-        t0.run();
-        t1.run();
+//        t0.run();
+//        t1.run();
         try {
             c = System.currentTimeMillis();
             t0.join();
