@@ -30,6 +30,7 @@ public class ServerGUI extends JFrame implements ActionListener, Thread.Uncaught
         add(buttonStop);
         server = new ChatServer();
         setVisible(true);
+
     }
 
     public static void main(String[] args) {
