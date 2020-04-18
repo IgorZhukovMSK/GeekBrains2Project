@@ -1,5 +1,5 @@
 package Level2.Lesson5;
-//
+
 public class Main {
     static final int size = 10000000;
     static final int h = size / 2;
