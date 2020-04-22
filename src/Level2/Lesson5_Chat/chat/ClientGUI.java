@@ -172,6 +172,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         JOptionPane.showMessageDialog(this, msg, "Exception", JOptionPane.ERROR_MESSAGE);
         System.exit(1);
     }
+
 }
 
 
