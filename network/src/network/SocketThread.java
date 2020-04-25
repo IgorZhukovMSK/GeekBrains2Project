@@ -16,9 +16,7 @@ public class SocketThread extends Thread {
         this.socket = socket;
         this.listener = listener;
         start();
-
     }
-
     @Override
     public void run() {
         try {
@@ -35,7 +33,6 @@ public class SocketThread extends Thread {
         } finally {
            close();
             listener.onSocketStop(this);
-
         }
     }
 
@@ -49,7 +46,6 @@ public class SocketThread extends Thread {
             close();
             return false;
         }
-
     }
 
     public synchronized void close() {

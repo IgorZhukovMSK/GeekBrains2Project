@@ -10,20 +10,6 @@ import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-/*
-1. Сообщение из "tfMessage" при нажатии кнопки "btnSend" (или Enter) должно выводиться в панель "log". // РЕШЕНО
-    Вопрос - видимо поле "tfMessage" должно как то очищаться - обновляться после вывода в "log" // РЕШЕНО
-    Вопрос - вывод нового сообщения должно быть с новой строки //РЕШЕНО
-    Вопрос - разобраться, почему второй раз нельзя отправлять сообщение // РЕШЕНО
-    Вопрос - почему "Enter" не всегда срабатывает в панеле "log"  // Потому, что в строке "log.setEnabled(false);" - было true //РЕШЕНО
-
-2. Одновременно с п.1. должно все сохраняться в файл
-
-    Вопрос - где должен быть расположен текстовый фал // РЕЩЕНО
-    Вопрос - когда заполняется - Думаю сразу при создании окна должен буть типа аарйлиста стринг - сообщения добавляются как п 1. // РЕШЕНО
- */
 
 public class ClientGUI extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler, SocketThreadListener {
 
@@ -48,9 +34,16 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     private boolean shownIoErrors = false;
     private SocketThread socketThread;
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new ClientGUI();
+            }
+        });
+    }
 
     ClientGUI() {
-
         Thread.setDefaultUncaughtExceptionHandler(this);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -58,15 +51,18 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         setAlwaysOnTop(true);
         userList.setListData(new String[]{"user1", "user2", "user3", "user4", "user5",
                 "user6", "user7", "user8", "user9", "user0",});
+
         JScrollPane scrlUser = new JScrollPane(userList);
         JScrollPane scrlPane = new JScrollPane(log);
         scrlUser.setPreferredSize(new Dimension(100, 0));
-        log.setWrapStyleWord(false);
         log.setLineWrap(true);
-        log.setEnabled(false);
+        log.setWrapStyleWord(true);
+        log.setEditable(false);
         cbAlwaysOnTop.addActionListener(this);
         tfMessage.addActionListener(this);
         btnSend.addActionListener(this);
+        btnLogin.addActionListener(this);
+        btnDisconnect.addActionListener(this);
 
         panelTop.add(tfIPAdress);
         panelTop.add(tfPort);
@@ -84,29 +80,21 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         add(panelBottom, BorderLayout.SOUTH);
 
         setVisible(true);
+        panelBottom.setVisible(false);
 
-        List<String> logList = new ArrayList<>();
-
-        btnSend.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-
-                log.append(tfMessage.getText() + "\n");
-                logList.add(tfMessage.getText());
-                log.grabFocus();
-                getRootPane().setDefaultButton(btnSend); // кнопка ентер по умолчанию "btnSend"
-
-            }
-        });
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new ClientGUI();
-            }
-        });
+//        List<String> logList = new ArrayList<>();
+//
+//        btnSend.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//
+//                log.append(tfMessage.getText() + "\n");
+//                logList.add(tfMessage.getText());
+//                log.grabFocus();
+//                getRootPane().setDefaultButton(btnSend); // кнопка ентер по умолчанию "btnSend"
+//
+//            }
+//        });
     }
 
     @Override
@@ -114,11 +102,17 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         Object src = e.getSource();
         if (src == cbAlwaysOnTop) {
             setAlwaysOnTop(cbAlwaysOnTop.isSelected());
-
         } else if (src == btnSend || src == tfMessage) {
             sendMessage();
         } else if (src == btnLogin) {
             connect();
+            panelTop.setVisible(false);
+            panelBottom.setVisible(true);
+
+        }else if (src == btnDisconnect){
+            disconnect();
+            panelTop.setVisible(true);
+            panelBottom.setVisible(false);
 
         } else {
             throw new RuntimeException("Unknown sourse: " + src);
@@ -129,9 +123,14 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         try {
             Socket socket = new Socket(tfIPAdress.getText(), Integer.parseInt(tfPort.getText()));
             socketThread = new SocketThread(this, "Client", socket);
-        } catch (IOException e) {
+                   } catch (IOException e) {
             showException(Thread.currentThread(), e);
         }
+    }
+
+    private void disconnect(){                              //Что то не понимаю как сделать, что бы сервер услышал, что мы отключились
+            socketThread.interrupt();
+            System.out.println("Disconnect " + socketThread.getName() + " " + tfLogin.getText());
     }
 
     private void sendMessage() {
@@ -184,12 +183,19 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     @Override
     public void uncaughtException(Thread t, Throwable e) {
         e.printStackTrace();
-        String msg;
-        StackTraceElement[] ste = e.getStackTrace();
-        msg = String.format("Exception in \"%s\" %s: %s\n\t at %s", t.getName(), e.getClass().getCanonicalName(), e.getMessage(), ste[0]);
-        JOptionPane.showMessageDialog(this, msg, "Exception", JOptionPane.ERROR_MESSAGE);
+        showException(t, e);
         System.exit(1);
+
+//        String msg;
+//        StackTraceElement[] ste = e.getStackTrace();
+//        msg = String.format("Exception in \"%s\" %s: %s\n\t at %s", t.getName(), e.getClass().getCanonicalName(), e.getMessage(), ste[0]);
+//        JOptionPane.showMessageDialog(this, msg, "Exception", JOptionPane.ERROR_MESSAGE);
+//        System.exit(1);
     }
+
+
+
+
 
     /**
      * Socket Thread Listener metods

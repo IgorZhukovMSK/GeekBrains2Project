@@ -27,7 +27,6 @@ public class ServerGUI extends JFrame implements ActionListener, Thread.Uncaught
         buttonStart.addActionListener(this);
         buttonStop.addActionListener(this);
 
-
         add(buttonStart);
         add(buttonStop);
         server = new ChatServer();
