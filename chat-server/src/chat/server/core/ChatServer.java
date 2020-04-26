@@ -7,10 +7,17 @@ import network.SocketThreadListener;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Vector;
 
 public class ChatServer implements ServerSocketThreadListener, SocketThreadListener {
 
     ServerSocketThread server;
+    ChatServerListener listener;
+    Vector<SocketThread> clients = new Vector<>();
+
+    public ChatServer (ChatServerListener listener){
+        this.listener = listener;
+    }
 
     public void start(int port) {
         if (server != null && server.isAlive())
@@ -29,8 +36,11 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     }
 
     private void putLog(String msg) {
-        System.out.println(msg);
+        listener.onChatServerMessage(msg);
     }
+
+
+
 
     /**
      * Server Socket Thread Listener metods
@@ -83,20 +93,28 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     @Override
     public void onSocketStop(SocketThread thread) {
         putLog("Socket stopped");
+        clients.remove(thread);
     }
 
     @Override
     public void onSocketReady(SocketThread thread, Socket socket) {
         putLog("Socket ready");
+        clients.add(thread);
     }
 
     @Override
     public void onReceiveServer(SocketThread thread, Socket socket, String msg) {
-        thread.sentMessage("echo: " + msg);
-    }
 
+        for (int i = 0; i < clients.size(); i++) {
+            SocketThread client = clients.get(i);
+            client.sentMessage("echo: " + msg);
+            }
+        }
     @Override
     public void onSocketException(SocketThread thread, Throwable throwable) {
         throwable.printStackTrace();
+    }
+
+    public void dropAllClients() {
     }
 }

@@ -1,13 +1,14 @@
 package chat.server.gui;
 
 import chat.server.core.ChatServer;
+import chat.server.core.ChatServerListener;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ServerGUI extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler {
+public class ServerGUI extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler, ChatServerListener {
     private static final int POS_X = 1000;
     private static final int POS_Y = 550;
     private static final int WIDTH = 200;
@@ -29,7 +30,7 @@ public class ServerGUI extends JFrame implements ActionListener, Thread.Uncaught
 
         add(buttonStart);
         add(buttonStop);
-        server = new ChatServer();
+        server = new ChatServer(this);
         setVisible(true);
 
     }
@@ -65,5 +66,10 @@ public class ServerGUI extends JFrame implements ActionListener, Thread.Uncaught
         msg = String.format("Exception in \"%s\" %s: %s\n\t at %s", t.getName(), e.getClass().getCanonicalName(), e.getMessage(), ste[0]);
         JOptionPane.showMessageDialog(this, msg, "Exceptin", JOptionPane.ERROR_MESSAGE);
         System.exit(1);
+    }
+
+    @Override
+    public void onChatServerMessage(String msg) {
+
     }
 }

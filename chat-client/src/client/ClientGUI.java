@@ -34,15 +34,6 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     private boolean shownIoErrors = false;
     private SocketThread socketThread;
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new ClientGUI();
-            }
-        });
-    }
-
     ClientGUI() {
         Thread.setDefaultUncaughtExceptionHandler(this);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -73,6 +64,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         panelBottom.add(btnDisconnect, BorderLayout.WEST);
         panelBottom.add(tfMessage, BorderLayout.CENTER);
         panelBottom.add(btnSend, BorderLayout.EAST);
+        panelBottom.setVisible(false);
 
         add(scrlUser, BorderLayout.EAST);
         add(scrlPane, BorderLayout.CENTER);
@@ -80,7 +72,6 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         add(panelBottom, BorderLayout.SOUTH);
 
         setVisible(true);
-        panelBottom.setVisible(false);
 
 //        List<String> logList = new ArrayList<>();
 //
@@ -97,6 +88,15 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
 //        });
     }
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new ClientGUI();
+            }
+        });
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
@@ -106,13 +106,9 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
             sendMessage();
         } else if (src == btnLogin) {
             connect();
-            panelTop.setVisible(false);
-            panelBottom.setVisible(true);
 
-        }else if (src == btnDisconnect){
+        } else if (src == btnDisconnect) {
             disconnect();
-            panelTop.setVisible(true);
-            panelBottom.setVisible(false);
 
         } else {
             throw new RuntimeException("Unknown sourse: " + src);
@@ -123,14 +119,14 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         try {
             Socket socket = new Socket(tfIPAdress.getText(), Integer.parseInt(tfPort.getText()));
             socketThread = new SocketThread(this, "Client", socket);
-                   } catch (IOException e) {
+        } catch (IOException e) {
             showException(Thread.currentThread(), e);
         }
     }
 
-    private void disconnect(){                              //Что то не понимаю как сделать, что бы сервер услышал, что мы отключились
-            socketThread.interrupt();
-            System.out.println("Disconnect " + socketThread.getName() + " " + tfLogin.getText());
+    private void disconnect() {                              //Что то не понимаю как сделать, что бы сервер услышал, что мы отключились
+        socketThread.close();
+        System.out.println("Disconnect " + socketThread.getName() + " " + tfLogin.getText());
     }
 
     private void sendMessage() {
@@ -194,9 +190,6 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     }
 
 
-
-
-
     /**
      * Socket Thread Listener metods
      */
@@ -209,11 +202,15 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     @Override
     public void onSocketStop(SocketThread thread) {
         putLog("Stop");
+        panelTop.setVisible(false);
+        panelBottom.setVisible(true);
     }
 
     @Override
     public void onSocketReady(SocketThread thread, Socket socket) {
         putLog("Ready");
+        panelTop.setVisible(true);
+        panelBottom.setVisible(false);
     }
 
     @Override
