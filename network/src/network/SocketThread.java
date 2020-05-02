@@ -1,5 +1,7 @@
 package network;
 
+import chat.server.core.ClientThread;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -18,6 +20,7 @@ public class SocketThread extends Thread {
         this.listener = listener;
         start();
     }
+
     @Override
     public void run() {
         try {
@@ -32,7 +35,12 @@ public class SocketThread extends Thread {
         } catch (IOException e) {
             listener.onSocketException(this, e);
         } finally {
-           close();
+//            try {
+//                ClientThread.sleep(12000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            close();
             listener.onSocketStop(this);
         }
     }

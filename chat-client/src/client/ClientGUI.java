@@ -1,5 +1,6 @@
 package client;
 
+import chat.server.core.ClientThread;
 import library.Library;
 import network.SocketThread;
 import network.SocketThreadListener;
@@ -198,6 +199,16 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
 
     @Override
     public void onSocketStop(SocketThread thread) {
+
+//        if (ClientThread.isAuthorized == false) {
+//
+//            try {
+//                ClientThread.sleep(12000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
         putLog("Stop");
         panelTop.setVisible(true);
         panelBottom.setVisible(false);

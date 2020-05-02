@@ -9,10 +9,10 @@ import java.net.Socket;
 public class ClientThread extends SocketThread {
 
     private String nickname;
-    private boolean isAuthorized;
+    public static boolean isAuthorized;
     private boolean isReconnecting;
 
-        public ClientThread(SocketThreadListener listener, String name, Socket socket) {
+    public ClientThread(SocketThreadListener listener, String name, Socket socket) {
         super(listener, name, socket);
     }
 
@@ -21,6 +21,15 @@ public class ClientThread extends SocketThread {
     }
 
     public boolean isAuthorized() {
+//
+//            if (isAuthorized){
+//                try {
+//                    ClientThread.sleep(1200);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+
         return isAuthorized;
     }
 
@@ -41,6 +50,7 @@ public class ClientThread extends SocketThread {
 
     public void authFail() {
         sendMessage(Library.getAuthDenied());
+
         close();
     }
 
