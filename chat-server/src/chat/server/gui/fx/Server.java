@@ -17,10 +17,10 @@ public class Server extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("server.fxml"));
+
         primaryStage.setTitle("ChatServer");
         primaryStage.setScene((new Scene(root, 600, 300)));
         primaryStage.setAlwaysOnTop(true);
-        primaryStage.close();
         primaryStage.show();
 
     }

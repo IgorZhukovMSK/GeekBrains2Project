@@ -11,11 +11,15 @@ import java.awt.event.ActionListener;
 public class ServerGUI extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler, ChatServerListener {
     private static final int POS_X = 1000;
     private static final int POS_Y = 550;
-    private static final int WIDTH = 200;
-    private static final int HEIGHT = 100;
-    private final ChatServer server;
+    private static final int WIDTH = 400;
+    private static final int HEIGHT = 500;
+
+    private final ChatServer chatServer = new ChatServer(this);
     private final JButton buttonStart = new JButton("Start");
     private final JButton buttonStop = new JButton("Stop");
+    private final JButton buttonDropAll = new JButton("Drop All");
+    private final JPanel panelTop = new JPanel(new GridLayout(1, 3));
+    private final JTextArea log = new JTextArea();
 
     ServerGUI() {
         Thread.setDefaultUncaughtExceptionHandler(this);
@@ -24,15 +28,19 @@ public class ServerGUI extends JFrame implements ActionListener, Thread.Uncaught
         setResizable(false);
         setTitle("Chat server");
         setAlwaysOnTop(true);
-        setLayout(new GridLayout(1, 2));
+        log.setEditable(false);
+        log.setLineWrap(true);
+        JScrollPane scrollLog = new JScrollPane(log);
         buttonStart.addActionListener(this);
         buttonStop.addActionListener(this);
 
-        add(buttonStart);
-        add(buttonStop);
-        server = new ChatServer(this);
-        setVisible(true);
+        panelTop.add(buttonStart);
+        panelTop.add(buttonStop);
+        panelTop.add(buttonDropAll);
+        add(panelTop, BorderLayout.NORTH);
+        add(scrollLog, BorderLayout.CENTER);
 
+        setVisible(true);
     }
 
     public static void main(String[] args) {
@@ -49,9 +57,9 @@ public class ServerGUI extends JFrame implements ActionListener, Thread.Uncaught
     public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
         if (src == buttonStart) {
-            server.start(8189);
+            chatServer.start(8189);
         } else if (src == buttonStop) {
-            server.stop();
+            chatServer.stop();
 //            throw new RuntimeException("Hello from EDT!!");
         } else {
             throw new RuntimeException("Unknown sourse: " + src);
@@ -70,6 +78,9 @@ public class ServerGUI extends JFrame implements ActionListener, Thread.Uncaught
 
     @Override
     public void onChatServerMessage(String msg) {
-
+        SwingUtilities.invokeLater(() -> {
+            log.append(msg + "\n");
+            log.setCaretPosition(log.getDocument().getLength());
+        });
     }
 }

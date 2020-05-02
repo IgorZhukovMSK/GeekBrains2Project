@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="chat.server.gui.GUIFormServer.FormServer">
+  <grid id="27dc6" binding="ServerChat" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="34cf8" class="javax.swing.JButton" binding="startButton" default-binding="true">
+        <constraints border-constraint="West"/>
+        <properties>
+          <borderPainted value="true"/>
+          <contentAreaFilled value="true"/>
+          <defaultCapable value="true"/>
+          <doubleBuffered value="false"/>
+          <enabled value="true"/>
+          <focusCycleRoot value="false"/>
+          <focusPainted value="true"/>
+          <focusable value="true"/>
+          <horizontalTextPosition value="11"/>
+          <inheritsPopupMenu value="false"/>
+          <maximumSize width="20" height="30"/>
+          <minimumSize width="20" height="30"/>
+          <preferredSize width="100" height="200"/>
+          <text value="Start"/>
+        </properties>
+      </component>
+      <component id="3d700" class="javax.swing.JButton" binding="stopButton" default-binding="true">
+        <constraints border-constraint="Center"/>
+        <properties>
+          <preferredSize width="10" height="10"/>
+          <text value="Stop"/>
+        </properties>
+      </component>
+      <component id="cab9d" class="javax.swing.JButton" binding="dropAllButton" default-binding="true">
+        <constraints border-constraint="East"/>
+        <properties>
+          <hideActionText value="false"/>
+          <text value="DropAll"/>
+        </properties>
+      </component>
+      <grid id="253cd" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="South"/>
+        <properties>
+          <preferredSize width="100" height="300"/>
+          <requestFocusEnabled value="true"/>
+        </properties>
+        <border type="none"/>
+        <children/>
+      </grid>
+    </children>
+  </grid>
+</form>

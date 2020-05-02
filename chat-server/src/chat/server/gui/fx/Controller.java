@@ -4,8 +4,9 @@ import chat.server.core.ChatServer;
 import chat.server.core.ChatServerListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
 
-import java.awt.*;
+//import java.awt.*;
 
 public class Controller implements ChatServerListener {
 
@@ -28,7 +29,7 @@ public class Controller implements ChatServerListener {
 
     @Override
     public void onChatServerMessage(String msg) {
-        talog.append(msg + System.lineSeparator());
+        talog.appendText(msg + System.lineSeparator());
 
     }
 }
