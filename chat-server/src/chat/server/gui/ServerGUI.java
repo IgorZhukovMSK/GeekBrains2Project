@@ -61,6 +61,8 @@ public class ServerGUI extends JFrame implements ActionListener, Thread.Uncaught
         } else if (src == buttonStop) {
             chatServer.stop();
 //            throw new RuntimeException("Hello from EDT!!");
+        }else if (src == buttonDropAll){
+            chatServer.dropAllClients();
         } else {
             throw new RuntimeException("Unknown sourse: " + src);
         }
